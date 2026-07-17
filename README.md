@@ -16,6 +16,101 @@ This lab demonstrates end-to-end setup: VM provisioning, app development, contai
 
 ---
 
+# NVIDIA GPU Driver & Container Toolkit Setup (Ubuntu 24.04)
+
+This guide explains how to install and verify NVIDIA GPU drivers and the NVIDIA Container Toolkit on Ubuntu 24.04 (GCP GPU VM).
+
+
+## 🛠️ Install NVIDIA Drivers
+
+1. Update packages:
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+2. Install kernel headers and build tools:
+```bash
+sudo apt install -y build-essential dkms linux-headers-$(uname -r)
+```
+
+3. Install NVIDIA driver (latest available):
+```bash
+sudo apt install -y nvidia-driver-535
+```
+
+4. Reboot:
+```bash
+sudo reboot
+```
+
+## Verify Driver Installation
+
+After reboot:
+```bash
+nvidia-smi
+```
+
+Expected output: GPU model (e.g., Tesla T4), driver version, CUDA version, and utilization.
+
+## Install NVIDIA Container Toolkit
+
+1. Remove any broken repo file:
+```bash
+sudo rm /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+
+2. Add NVIDIA GPG key:
+```bash
+curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey | \
+  sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit.gpg
+```
+
+3. Add generic Debian repo:
+```bash
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+
+4. Update and install:
+```bash
+sudo apt update
+sudo apt install -y nvidia-container-toolkit
+```
+
+---
+
+## Configure Docker Runtime
+
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+---
+
+## Test GPU in Container
+
+Run:
+```bash
+docker run --rm --gpus all nvidia/cuda:12.2.0-runtime-ubuntu22.04 nvidia-smi
+```
+
+Expected output: same GPU info as host (`nvidia-smi`).
+
+---
+
+## Recap
+
+- Installed NVIDIA driver (`nvidia-driver-535`).
+- Verified with `nvidia-smi`.
+- Installed NVIDIA Container Toolkit from generic repo.
+- Configured Docker runtime.
+- Tested GPU visibility inside container.
+
+Now your VM is ready to run GPU workloads in Docker or Kubernetes.
+
+```
+
 ## Hugging Face Authentication
 
 Gemma-2B is a **gated model**. You must request access at:  
