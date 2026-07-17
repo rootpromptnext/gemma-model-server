@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env
+
+# Git files
+.git
+.gitignore
+
+# Local logs
+*.log
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Kubernetes manifests (not needed in image)
+k8s/
